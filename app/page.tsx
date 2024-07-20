@@ -1,11 +1,11 @@
 "use client";
 import { Button, Paper } from "@mui/material";
 import { useEffect, useState } from "react";
-import { fetchClasses, fetchStudents } from "./actions";
 import { Student, Class } from "@prisma/client";
 import StudentTable from "./_components/student-table";
 import AddStudentForm from "./_forms/add-student-form";
 import AddClassForm from "./_forms/add-class-form";
+import { getAllClasses, getAllStudents } from "./actions";
 
 export default function Home() {
   const [students, setStudents] = useState<Student[]>([]);
@@ -15,8 +15,8 @@ export default function Home() {
 
   useEffect(() => {
     async function load() {
-      const initialStudents = await fetchStudents();
-      const initialClasses = await fetchClasses();
+      const initialStudents = await getAllStudents();
+      const initialClasses = await getAllClasses();
 
       setStudents(initialStudents);
       setClasses(initialClasses);
@@ -28,11 +28,7 @@ export default function Home() {
   return (
     <>
       <div className="flex flex-row items-left flex-wrap ml-12 mt-12 gap-8">
-        <StudentTable
-          students={students}
-          classes={classes}
-          setStudents={setStudents}
-        />
+        <StudentTable students={students} classes={classes} />
 
         {showAddStudentForm ? (
           <Paper className="max-w-fit max-h-fit">
