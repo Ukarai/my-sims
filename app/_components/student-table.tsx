@@ -25,6 +25,8 @@ const StudentTable = ({
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
+  const actionPopoverOpen = Boolean(anchorEl);
+  const actionPopoverId = actionPopoverOpen ? "action-popover" : undefined;
 
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -39,15 +41,12 @@ const StudentTable = ({
     setDeleteIndex(null);
   };
 
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
-
-  const getClassName = (id: number) => {
+  const getClassName = (classId: number) => {
     let nameOfClass = "";
 
-    classes.forEach((c: Class) => {
-      if (c.id === id) {
-        nameOfClass = c.name;
+    classes.forEach((classData: Class) => {
+      if (classData.id === classId) {
+        nameOfClass = classData.name;
         return;
       }
     });
@@ -121,8 +120,8 @@ const StudentTable = ({
         </Table>
       </TableContainer>
       <Popover
-        id={id}
-        open={open}
+        id={actionPopoverId}
+        open={actionPopoverOpen}
         anchorEl={anchorEl}
         onClose={handleClose}
         anchorOrigin={{
