@@ -6,138 +6,77 @@ import {
   TableCell,
   TableBody,
   Table,
-  Button,
-  Popover,
 } from "@mui/material";
-import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
 import { Class, Student } from "@prisma/client";
-import { Dispatch, useState } from "react";
-import { deleteStudent } from "../actions";
+import { useEffect, useState } from "react";
+import { getAllClasses, getStudentsInClasses } from "../actions";
 
-const StudentTable = ({
-  students,
-  classes,
-  setStudents,
-}: {
-  students: Student[];
-  classes: Class[];
-  setStudents: Dispatch<Student[]>;
-}) => {
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
-  const actionPopoverOpen = Boolean(anchorEl);
-  const actionPopoverId = actionPopoverOpen ? "action-popover" : undefined;
+const StudentTable = ({ classes }: { classes: number[] | undefined }) => {
+  const [students, setStudents] = useState<Student[] | undefined>();
+  const [classData, setClasses] = useState<Class[] | undefined>();
 
-  const handleClick = (
-    event: React.MouseEvent<HTMLButtonElement>,
-    index: number
-  ) => {
-    setAnchorEl(event.currentTarget);
-    setDeleteIndex(index);
-  };
+  useEffect(() => {
+    async function load() {
+      const studentData = await getStudentsInClasses(classes);
+      setStudents(studentData);
+      const loadClassData = await getAllClasses();
+      setClasses(loadClassData);
+    }
 
-  const handleClose = () => {
-    setAnchorEl(null);
-    setDeleteIndex(null);
-  };
+    load();
+  }, []);
 
-  const getClassName = (classId: number) => {
-    let nameOfClass = "";
+  const getClassName = (id: number) => {
+    let name = "";
 
-    classes.forEach((classData: Class) => {
-      if (classData.id === classId) {
-        nameOfClass = classData.name;
+    classData?.forEach((c: Class) => {
+      if (c.id === id) {
+        name = c.name;
         return;
       }
     });
 
-    return nameOfClass;
-  };
-
-  const deleteUser = async (index: number | null) => {
-    if (index === null) return;
-
-    const action = await deleteStudent(index);
-
-    if (action !== null) {
-      let currentStudents = students;
-      let studentIndex = currentStudents.indexOf(action);
-
-      if (index > -1) {
-        currentStudents.splice(studentIndex, 1);
-      }
-
-      handleClose();
-      setStudents(currentStudents);
-    }
+    return name;
   };
 
   return (
-    <>
-      <TableContainer
-        component={Paper}
-        className="max-w-fit max-h-fit rounded-xl "
-      >
-        <Table>
-          <TableHead>
+    <TableContainer
+      component={Paper}
+      className="max-w-fit max-h-fit rounded-xl "
+    >
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell className="bg-primary text-white">First Name</TableCell>
+            <TableCell className="bg-primary text-white">Surename</TableCell>
+            <TableCell className="bg-primary text-white">Class</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {students?.length === 0 ? (
             <TableRow>
-              <TableCell className="bg-primary text-white">
-                First Name
+              <TableCell colSpan={4} align="center">
+                No records available
               </TableCell>
-              <TableCell className="bg-primary text-white">Surename</TableCell>
-              <TableCell className="bg-primary text-white">Class</TableCell>
-              <TableCell className="bg-primary text-white">Actions</TableCell>
             </TableRow>
-          </TableHead>
-          <TableBody>
-            {students?.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={4} align="center">
-                  No records available
+          ) : (
+            students?.map((s: Student, i: number) => (
+              <TableRow key={i}>
+                <TableCell className="border-r-[1px] border-gray-200 py-0">
+                  {s.firstName}
+                </TableCell>
+                <TableCell className="border-r-[1px] border-gray-200 py-0">
+                  {s.surename}
+                </TableCell>
+                <TableCell className="border-r-[1px] border-gray-200 py-0">
+                  {getClassName(s.classId)}
                 </TableCell>
               </TableRow>
-            ) : (
-              students?.map((s: Student, i: number) => (
-                <TableRow key={i}>
-                  <TableCell className="border-r-[1px] border-gray-200 py-0">
-                    {s.firstName}
-                  </TableCell>
-                  <TableCell className="border-r-[1px] border-gray-200 py-0">
-                    {s.surename}
-                  </TableCell>
-                  <TableCell className="border-r-[1px] border-gray-200 py-0">
-                    {getClassName(s.classId)}
-                  </TableCell>
-                  <TableCell className="border-r-[1px] border-gray-200 flex py-0">
-                    <Button onClick={(e) => handleClick(e, s.id)}>
-                      <MoreHorizOutlinedIcon className="mx-auto" />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <Popover
-        id={actionPopoverId}
-        open={actionPopoverOpen}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-      >
-        <Button
-          variant="contained"
-          color="error"
-          onClick={() => deleteUser(deleteIndex)}
-        >
-          Delete
-        </Button>
-      </Popover>
-    </>
+            ))
+          )}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 
