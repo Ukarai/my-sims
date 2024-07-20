@@ -9,7 +9,11 @@ import {
 } from "@mui/material";
 import { Class, Student } from "@prisma/client";
 import { useEffect, useState } from "react";
-import { getAllClasses, getStudentsInClasses } from "../actions";
+import {
+  getAllClasses,
+  getAllStudents,
+  getStudentsInClasses,
+} from "../actions";
 
 const StudentTable = ({ classes }: { classes: number[] | undefined }) => {
   const [students, setStudents] = useState<Student[] | undefined>();
@@ -17,13 +21,20 @@ const StudentTable = ({ classes }: { classes: number[] | undefined }) => {
 
   useEffect(() => {
     async function load() {
-      const studentData = await getStudentsInClasses(classes);
-      setStudents(studentData);
+      let studentData;
+
+      if (classes === undefined || classes?.length === 0)
+        studentData = await getAllStudents();
+      else studentData = await getStudentsInClasses(classes);
+
       const loadClassData = await getAllClasses();
+
+      setStudents(studentData);
       setClasses(loadClassData);
     }
 
     load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getClassName = (id: number) => {
