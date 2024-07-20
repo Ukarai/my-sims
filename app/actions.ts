@@ -6,7 +6,6 @@ export async function createStudent(
   surename: string,
   classId: number
 ) {
-  "use server";
   const newStudent = await prisma.student.create({
     data: {
       firstName: firstName,
@@ -19,7 +18,6 @@ export async function createStudent(
 }
 
 export async function createClass(name: string) {
-  "use server";
   const newClass = await prisma.class.create({
     data: {
       name: name,
@@ -30,17 +28,14 @@ export async function createClass(name: string) {
 }
 
 export async function fetchStudents() {
-  "use server";
   return prisma.student.findMany();
 }
 
 export async function fetchClasses() {
-  "use server";
   return prisma.class.findMany();
 }
 
 export async function deleteStudent(studentId: number) {
-  "use server";
   return prisma.student.delete({
     where: {
       id: studentId,
