@@ -1,7 +1,6 @@
 "use client";
 
 import StudentTable from "@/app/_components/student-table";
-import { useEffect } from "react";
 
 export default function ClassPage({ params = [] }: any) {
   return (
