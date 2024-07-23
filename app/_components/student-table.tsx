@@ -9,27 +9,21 @@ import {
 } from "@mui/material";
 import { Class, Student } from "@prisma/client";
 import { useEffect, useState } from "react";
-import {
-  getAllClasses,
-  getAllStudents,
-  getStudentsInClasses,
-} from "../actions";
+import { getClasses } from "../actions";
 
-const StudentTable = ({ classes }: { classes: number[] | undefined }) => {
-  const [students, setStudents] = useState<Student[] | undefined>();
+const StudentTable = ({
+  students,
+  classes,
+}: {
+  students: Student[] | undefined;
+  classes: number[];
+}) => {
   const [classData, setClasses] = useState<Class[] | undefined>();
 
   useEffect(() => {
     async function load() {
-      let studentData;
+      const loadClassData = await getClasses(classes);
 
-      if (classes === undefined || classes?.length === 0)
-        studentData = await getAllStudents();
-      else studentData = await getStudentsInClasses(classes);
-
-      const loadClassData = await getAllClasses();
-
-      setStudents(studentData);
       setClasses(loadClassData);
     }
 
@@ -71,19 +65,21 @@ const StudentTable = ({ classes }: { classes: number[] | undefined }) => {
               </TableCell>
             </TableRow>
           ) : (
-            students?.map((s: Student, i: number) => (
-              <TableRow key={i}>
-                <TableCell className="border-r-[1px] border-gray-200 py-0">
-                  {s.firstName}
-                </TableCell>
-                <TableCell className="border-r-[1px] border-gray-200 py-0">
-                  {s.surename}
-                </TableCell>
-                <TableCell className="border-r-[1px] border-gray-200 py-0">
-                  {getClassName(s.classId)}
-                </TableCell>
-              </TableRow>
-            ))
+            students
+              ?.filter((s: Student) => classes?.includes(s.classId))
+              .map((s: Student, i: number) => (
+                <TableRow key={i}>
+                  <TableCell className="border-r-[1px] border-gray-200 py-0">
+                    {s.firstName}
+                  </TableCell>
+                  <TableCell className="border-r-[1px] border-gray-200 py-0">
+                    {s.surename}
+                  </TableCell>
+                  <TableCell className="border-r-[1px] border-gray-200 py-0">
+                    {getClassName(s.classId)}
+                  </TableCell>
+                </TableRow>
+              ))
           )}
         </TableBody>
       </Table>

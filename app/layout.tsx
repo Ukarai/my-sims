@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AppBar, List, ListItem, Toolbar } from "@mui/material";
+import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,8 +21,10 @@ export default function RootLayout({
       <body className={inter.className}>
         <AppBar position="static" className="bg-primary">
           <Toolbar variant="dense">
-            <List className="flex ml-auto">
-              <ListItem>Home</ListItem>
+            <List className="flex">
+              <ListItem>
+                <Link href="/">Home</Link>
+              </ListItem>
               <ListItem>About</ListItem>
               <ListItem>Contact</ListItem>
             </List>
