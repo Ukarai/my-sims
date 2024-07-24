@@ -24,7 +24,7 @@ const ClassList = () => {
       {classList?.map((classData: Class, index: number) => {
         return (
           <Link href={`/class/${classData.id}`} key={index}>
-            <Card className="p-4 border-primary border-2 ">
+            <Card className="p-4 border-primary border-2 text-2xl">
               <h1>Class: {classData.name}</h1>
             </Card>
           </Link>

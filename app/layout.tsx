@@ -22,11 +22,11 @@ export default function RootLayout({
         <AppBar position="static" className="bg-primary">
           <Toolbar variant="dense">
             <List className="flex">
-              <ListItem>
+              <ListItem className="text-2xl">
                 <Link href="/">Home</Link>
               </ListItem>
-              <ListItem>About</ListItem>
-              <ListItem>Contact</ListItem>
+              <ListItem className="text-2xl">About</ListItem>
+              <ListItem className="text-2xl"> Contact</ListItem>
             </List>
           </Toolbar>
         </AppBar>
