@@ -19,7 +19,7 @@ const StudentTable = ({
   return (
     <TableContainer
       component={Paper}
-      className="max-w-fit max-h-fit rounded-xl "
+      className="max-w-fit max-h-fit rounded-xl rounded-tl-none "
     >
       <Table>
         <TableHead>

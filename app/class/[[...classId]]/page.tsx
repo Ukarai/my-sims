@@ -51,9 +51,9 @@ export default function ClassPage({
     <div className="flex flex-col items-left flex-wrap ml-12 mt-4 gap-2">
       <div className="flex flex-row gap-2 text-3xl mx-auto">
         Class:{" "}
-        {classData?.map((c: Class, i: number) => (
-          <h1 key={i}>{c.name}</h1>
-        ))}
+        {params.classId === undefined
+          ? "All"
+          : classData?.map((c: Class, i: number) => <h1 key={i}>{c.name}</h1>)}
       </div>
 
       <div className="text-2xl">
