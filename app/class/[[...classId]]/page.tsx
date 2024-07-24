@@ -1,6 +1,7 @@
 "use client";
 
 import StudentTable from "@/app/_components/student-table";
+import AddStudentForm from "@/app/_forms/add-student-form";
 import { getAllClasses, getAllStudents, getClasses } from "@/app/actions";
 import { Button } from "@mui/material";
 import { Class, Student } from "@prisma/client";
@@ -13,6 +14,7 @@ export default function ClassPage({
 }) {
   const [classData, setClassData] = useState<Class[]>();
   const [students, setStudents] = useState<Student[]>();
+  const [showNewStudentForm, setShowNewStudentForm] = useState<Boolean>(false);
 
   useEffect(() => {
     async function load() {
@@ -35,6 +37,16 @@ export default function ClassPage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const revalidateStudents = async () => {
+    const studentData = await getAllStudents();
+
+    setStudents(studentData);
+  };
+
+  if (classData === undefined) {
+    return <div>Uh oh</div>;
+  }
+
   return (
     <div className="flex flex-col items-left flex-wrap ml-12 mt-4 gap-2">
       <div className="flex flex-row gap-2 text-3xl mx-auto">
@@ -52,9 +64,25 @@ export default function ClassPage({
           ).length
         }
       </div>
-      <Button variant="contained" className="max-w-fit bg-primary">
-        New Student
-      </Button>
+      {}
+
+      {showNewStudentForm ? (
+        <div className="max-w-fit border-primary border-solid border-2 rounded-xl">
+          <AddStudentForm
+            setShowForm={setShowNewStudentForm}
+            classes={classData}
+            revalidateStudents={revalidateStudents}
+          />
+        </div>
+      ) : (
+        <Button
+          variant="contained"
+          className="max-w-fit bg-primary"
+          onClick={() => setShowNewStudentForm(!showNewStudentForm)}
+        >
+          New Student
+        </Button>
+      )}
       <StudentTable
         students={students}
         classes={classData?.map((c: Class, i) => c.id)}
