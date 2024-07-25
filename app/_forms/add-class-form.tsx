@@ -1,25 +1,22 @@
-import { Button, Input, Select, TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import { FormEvent, useState } from "react";
 import { createClass } from "../actions";
 
-const AddClassForm = ({ classes, setClasses, setShowAddClassForm }: any) => {
+const AddClassForm = ({ refreshClassList, setShowAddClassForm }: any) => {
   const [newClassName, setNewClassName] = useState("");
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    let classesCopy = classes;
-    let newClass = await createClass(newClassName);
+    await createClass(newClassName);
 
-    classesCopy.push(newClass);
-
-    setClasses(classesCopy);
     setNewClassName("");
     setShowAddClassForm(false);
+    refreshClassList();
   };
 
   return (
-    <form onSubmit={handleSubmit} className="m-4 flex flex-col gap-4">
+    <form onSubmit={handleSubmit} className="m-4 flex flex-col gap-4 max-w-fit">
       <TextField
         value={newClassName}
         placeholder="Class Name"

@@ -2,8 +2,6 @@
 
 import { Card } from "@mui/material";
 import { Class } from "@prisma/client";
-import { useEffect, useState } from "react";
-import { getAllClasses } from "../actions";
 import Link from "next/link";
 
 const ClassCard = ({ dest, name }: { dest: string; name: string }) => {
@@ -16,19 +14,7 @@ const ClassCard = ({ dest, name }: { dest: string; name: string }) => {
   );
 };
 
-const ClassList = () => {
-  const [classList, setClassList] = useState<Class[]>();
-
-  useEffect(() => {
-    async function load() {
-      const allClasses = await getAllClasses();
-
-      setClassList(allClasses);
-    }
-
-    load();
-  }, []);
-
+const ClassList = ({ classList }: { classList: Class[] }) => {
   return (
     <div className="flex flex-row gap-6">
       <ClassCard dest={"/class/"} name={"All"} />

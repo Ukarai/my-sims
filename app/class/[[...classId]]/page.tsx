@@ -16,10 +16,15 @@ export default function ClassPage({
   const [students, setStudents] = useState<Student[]>();
   const [showNewStudentForm, setShowNewStudentForm] = useState<Boolean>(false);
 
+  const refreshStudentList = async () => {
+    const studentData = await getAllStudents();
+
+    setStudents(studentData);
+  };
+
   useEffect(() => {
     async function load() {
       let initClassData;
-      const studentData = await getAllStudents();
 
       if (params.classId === undefined) {
         initClassData = await getAllClasses();
@@ -29,19 +34,13 @@ export default function ClassPage({
         );
       }
 
-      setStudents(studentData);
+      refreshStudentList();
       setClassData(initClassData);
     }
 
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const revalidateStudents = async () => {
-    const studentData = await getAllStudents();
-
-    setStudents(studentData);
-  };
 
   if (classData === undefined) {
     return <div>Uh oh</div>;
@@ -71,7 +70,7 @@ export default function ClassPage({
           <AddStudentForm
             setShowForm={setShowNewStudentForm}
             classes={classData}
-            revalidateStudents={revalidateStudents}
+            revalidateStudents={refreshStudentList}
           />
         </div>
       ) : (
